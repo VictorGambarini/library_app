@@ -1,37 +1,56 @@
-from curses.ascii import isblank
-from operator import index
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
-from sqlalchemy.orm import relationship
-
-from library_app.database import Base
-
-class User(Base):
-    __tablename__ = "user"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-
-    book = relationship("Book", back_populates="owner")
+from typing import Optional
+from sqlmodel import Field, Session, SQLModel, create_engine
 
 
-class Book(Base):
-    __tablename__ = "book"    
+class MemberBase(SQLModel):
+    name: str = Field(index=True)
+    email: str = Field(index=True)
+    is_active: Optional[bool] = Field(default=True)
+    n_books_rented: Optional[int] = Field(default=0, index=True)
+    debt: Optional[float] = Field(default=0, index=True)
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    authors = Column(String, index=True)
-    isbn = Column(String, index=True)
-    isbn13 = Column(String, index=True)
-    language_code = Column(String, index=True)
-    num_pages = Column(Integer, index=True)
-    ratings_count = Column(Integer, index=True)
-    text_reviews_count = Column(Integer, index=True)
-    publication_date = Column(String, index=True)
-    publisher = Column(String, index=True)
-    average_rating = Column(Float, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("user.id"))
 
-    owner = relationship("User", back_populates="book")
+class Member(MemberBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    
+
+class MemberCreate(SQLModel):
+    name: str
+    email: str
+
+
+class MemberRead(MemberBase):
+    id: int
+
+
+class MemberUpdate(MemberBase):
+    name: Optional[str] = None
+    email: Optional[str] = None
+
+
+class BookBase(SQLModel):
+    title: str = Field(index=True)
+    authors: str = Field(index=True)
+    isbn: str = Field(index=True)
+    isbn13: str = Field(index=True)
+    language_code: str = Field(index=True)
+    num_pages: int = Field(index=True)
+    ratings_count: int = Field(index=True)
+    text_reviews_count: int = Field(index=True)
+    publication_date: str = Field(index=True)
+    publisher: str = Field(index=True)
+    average_rating: float = Field(index=True)
+    description: str
+
+
+
+class Book(BookBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class BookCreate(BookBase):
+    pass
+
+
+class BookRead(BookBase):
+    id: int
