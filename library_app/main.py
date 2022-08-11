@@ -3,7 +3,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from library_app.routers import members, books
-from library_app.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

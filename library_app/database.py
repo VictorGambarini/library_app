@@ -1,6 +1,5 @@
-from requests import session
 from sqlmodel import create_engine, SQLModel, Session
-from library_app.models import Member, Book
+from library_app import models
 from library_app.config import secrets
 
 connect_args = {"check_same_thread": False}
@@ -10,11 +9,8 @@ def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
 def get_session():
-    db = Session(engine)
-    try:
-        yield db
-    finally:
-        db.close()
+    with Session(engine) as session:
+        yield session
 
 def main():
     create_db_and_tables()

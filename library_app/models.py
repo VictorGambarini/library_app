@@ -1,5 +1,5 @@
-from typing import Optional
-from sqlmodel import Field, Session, SQLModel, create_engine
+from typing import List, Optional
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class MemberBase(SQLModel):
@@ -12,6 +12,7 @@ class MemberBase(SQLModel):
 
 class Member(MemberBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    books: List["Book"] = Relationship(back_populates="member")
     
 
 class MemberCreate(SQLModel):
@@ -41,11 +42,12 @@ class BookBase(SQLModel):
     publisher: str = Field(index=True)
     average_rating: float = Field(index=True)
     description: str
-
+    member_id: Optional[int] = Field(default=None, foreign_key="member.id")
 
 
 class Book(BookBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    member: Optional[Member] = Relationship(back_populates="books")
 
 
 class BookCreate(BookBase):
@@ -54,3 +56,19 @@ class BookCreate(BookBase):
 
 class BookRead(BookBase):
     id: int
+
+
+class BookUpdate(SQLModel):
+    title: Optional[str] = None
+    authors: Optional[str] = None
+    isbn: Optional[str] = None
+    isbn13: Optional[str] = None
+    language_code: Optional[str] = None
+    num_pages: Optional[int] = 0
+    ratings_count: Optional[int] = 0
+    text_reviews_count: Optional[int] = 0
+    publication_date:Optional[str] = None
+    publisher: Optional[str] = None
+    average_rating: Optional[float] = 0
+    description: Optional[str] = None
+    member_id: Optional[int] = Field(default=None, foreign_key="member.id")
