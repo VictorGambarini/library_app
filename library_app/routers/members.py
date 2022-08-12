@@ -9,14 +9,16 @@ router = APIRouter(prefix="/members", tags=["members"])
 # Create a new member
 @router.post("/create", response_model=models.MemberRead)
 def create_member(member: models.MemberCreate, session: Session = Depends(get_session)):
-    db_member = models.Member.from_orm(member)      
+    db_member = models.Member.from_orm(member)
+    if session.exec(select(models.Member).where(models.Member.email == db_member.email)).first():
+        raise HTTPException(status_code=400, detail="Email already registered.")
     session.add(db_member)
     session.commit()
     session.refresh(db_member)
     return db_member
 
 # Get a member by id
-@router.get("/{member_id}", response_model=models.MemberRead)
+@router.get("/get/{member_id}", response_model=models.MemberRead)
 def read_member(member_id: int, session: Session = Depends(get_session)):
     member = session.get(models.Member, member_id)
     if not member:
@@ -30,7 +32,7 @@ def read_all_members(offset: int = 0, limit: int = Query(default=100, lte=100), 
     return members
 
 # Update a member
-@router.patch("/{member_id}", response_model=models.MemberRead)
+@router.patch("/update/{member_id}", response_model=models.MemberRead)
 def update_member(member_id: int, member: models.MemberUpdate, session: Session = Depends(get_session)):
     db_member = session.get(models.Member, member_id)
     if not db_member:
@@ -44,7 +46,7 @@ def update_member(member_id: int, member: models.MemberUpdate, session: Session 
     return db_member
 
 # Delete member
-@router.delete("/{member_id}")
+@router.delete("/delete/{member_id}")
 def delete_member(member_id: int, session: Session = Depends(get_session)):
     member = session.get(models.Member, member_id)
     if not member:
