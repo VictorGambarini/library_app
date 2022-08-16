@@ -1,0 +1,25 @@
+.nav-bar {
+    background-color: #333;
+    color: white;
+    font-size: 2rem;
+    justify-content: space-between;
+}
+
+.nav-bar-list {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-bar-list>li {
+cursor: pointer;
+
+}
+
+.logo-img {
+    width: 3rem;
+}
+
+.logo-title {
+    font-size: 0.6rem;
+}
