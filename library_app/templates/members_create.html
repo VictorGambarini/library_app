@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}Awesome Library - Create Member{% endblock %} {% block
+    content %}
+    <div class="form">
+      <div class="form-title">
+        <p  id="title">Create Member</p>
+      </div>
+      <form id="createMemberForm">
+        <label class="form-label">Name:</label>
+        <input class="form-input" type="text" id="name" />
+        <label class="form-label">Email:</label>
+        <input class="form-input" type="email" id="email" />
+        <input class="form-button" type="submit" value="Create" />
+        <span class="user-message"><p id="message-p"></p></span>
+      </form>
+    </div>
+    <script>
+      document.getElementById("createMemberForm").addEventListener("submit", submitForm);
+      function submitForm (e) {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const text = '{"name": "'+name+'","email": "'+email+'"}';
+        const jsonString = JSON.stringify(text);
+        const toSend = JSON.parse(jsonString)
+        const xhr = new XMLHttpRequest()
+        xhr.open("POST", "/members/create", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        xhr.onload = function() {
+          console.log(this.responseText);
+          if(this.responseText.includes("Email already registered")){
+            document.getElementById("message-p").innerText = "Email already registered";
+          }else{
+            document.getElementById("message-p").innerText = "Member successfuly registered";
+          }
+        }
+
+        xhr.send(toSend)
+      }
+    </script>
+    {% endblock %}

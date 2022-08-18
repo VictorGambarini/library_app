@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}Awesome Library - Update Member{% endblock %} {% block
+    content %}
+    <div class="form">
+      <div class="form-title">
+        <p  id="title">Update Member</p>
+      </div>
+      <form id="updateMemberForm">
+        <label class="form-label">ID:</label>
+        <input class="form-input" type="text" id="memberID" />
+        <label class="form-label">Name:</label>
+        <input class="form-input" type="text" id="name" />
+        <label class="form-label">Email:</label>
+        <input class="form-input" type="email" id="email" />
+        <input class="form-button" type="submit" value="Create" />
+        <span class="user-message"><p id="message-p"></p></span>
+      </form>
+    </div>
+    {% endblock %}
